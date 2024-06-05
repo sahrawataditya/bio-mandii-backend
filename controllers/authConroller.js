@@ -4,14 +4,14 @@ import userModel from "../models/User.js";
 
 export const loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    if (!email || !password) {
+    const { username, password } = req.body;
+    if (!username || !password) {
       return res.status(400).json({
         success: false,
-        message: "Please provide email and password",
+        message: "Please provide username and password",
       });
     }
-    const user = await userModel.findOne({ email });
+    const user = await userModel.findOne({ username });
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -22,7 +22,7 @@ export const loginUser = async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({
         success: false,
-        message: "Invalid email or password",
+        message: "Invalid username or password",
       });
     }
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
@@ -43,25 +43,23 @@ export const loginUser = async (req, res) => {
 
 export const registerUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-    if (!name || !email || !password) {
+    const { username, password } = req.body;
+    if (!username || !password) {
       return res.status(400).json({
         success: false,
         message: "Please provide all Fields",
       });
     }
-    const user = await userModel.findOne({ email });
+    const user = await userModel.findOne({ username });
     if (user) {
       return res.status(409).json({
         success: false,
         message: "User already exists",
       });
     }
-    const hashedPassword = bcrypt.hashSync(password, 12);
     const newUser = await userModel.create({
-      name,
-      email,
-      password: hashedPassword,
+      username,
+      password,
     });
     return res.status(201).json({
       success: true,
@@ -69,7 +67,7 @@ export const registerUser = async (req, res) => {
       newUser,
     });
   } catch (error) {
-    console.log(error);
+    console.log("Erro from controller", error);
     res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -138,8 +136,19 @@ export const getAllUsers = async (req, res) => {
 export const updateUser = async (req, res) => {
   try {
     const { id } = req.user;
-    const user = await userModel.findByIdAndUpdate(id, req.body, { new: true });
-    if (!user) {
+    const { username, password } = req.body;
+    const newPass = await bcrypt.hash(password, 12);
+    const updatedUser = await userModel.findByIdAndUpdate(
+      id,
+      {
+        username,
+        password: newPass,
+      },
+      {
+        new: true,
+      }
+    );
+    if (!updatedUser) {
       return res.status(404).json({
         success: false,
         message: "User not found",

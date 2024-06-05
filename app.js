@@ -5,6 +5,7 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import { connectDb } from "./lib/Db.js";
 import { authRouter } from "./routes/authRouter.js";
+import { taskRouter } from "./routes/taskRouter.js";
 dotenv.config({ path: "./.env" });
 connectDb();
 
@@ -23,7 +24,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1", authRouter);
-app.use("/api/v1", authRouter);
+app.use("/api/v1/task", taskRouter);
 app.use(errorMiddleware);
 
 app.listen(port, () =>

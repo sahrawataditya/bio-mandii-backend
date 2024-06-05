@@ -15,6 +15,7 @@ authRouter.post("/login", loginUser);
 authRouter.post("/register", registerUser);
 authRouter.delete("/delete/:id", deleteUser);
 authRouter.get("/allUsers", getAllUsers);
+
 authRouter.use(authMiddleware);
 authRouter.get("/getUser", getUser);
 authRouter.put("/updateUser", updateUser);
