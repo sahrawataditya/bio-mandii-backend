@@ -15,7 +15,7 @@ export const createTask = async (req, res) => {
       title,
       description,
       createdBy: id,
-      status: status || "pending",
+      status: status || "not started",
     });
     return res.status(201).json({
       success: true,
@@ -23,7 +23,6 @@ export const createTask = async (req, res) => {
       newTask,
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -56,12 +55,13 @@ export const getTasks = async (req, res) => {
   try {
     const { limit = 10, page = 1 } = req.query;
     const { id } = req?.user;
+    const counts = await taskModel.countDocuments({ createdBy: id });
     const tasks = await taskModel
       .find({ createdBy: id })
       .sort("-createdAt")
       .limit(limit)
       .skip(limit * (page - 1))
-      .select("-_id -__v");
+      .select(" -__v");
     if (tasks.length === 0) {
       return res.status(404).json({
         success: false,
@@ -71,6 +71,7 @@ export const getTasks = async (req, res) => {
     return res.status(200).json({
       success: true,
       tasks,
+      counts,
     });
   } catch (error) {
     res.status(500).json({

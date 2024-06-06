@@ -164,3 +164,62 @@ export const updateUser = async (req, res) => {
     });
   }
 };
+
+export const changeUsername = async (req, res) => {
+  try {
+    const { id } = req.user;
+    const { username } = req.body;
+    await userModel.findByIdAndUpdate(
+      id,
+      {
+        username,
+      },
+      {
+        $set: true,
+      }
+    );
+    return res.status(201).json({
+      success: true,
+      message: "Username Changed Successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+export const changePassword = async (req, res) => {
+  try {
+    const { id } = req.user;
+    const { currentPassword, password } = req.body;
+    const user = await userModel.findById(id);
+    const isMatch = bcrypt.compareSync(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({
+        success: false,
+        message: "Current password is incorrect",
+      });
+    }
+    const newPass = bcrypt.hashSync(password, 12);
+    await userModel.findByIdAndUpdate(
+      id,
+      {
+        password: newPass,
+      },
+      {
+        $set: true,
+      }
+    );
+    return res.status(201).json({
+      success: true,
+      message: "User Password Changed Successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
