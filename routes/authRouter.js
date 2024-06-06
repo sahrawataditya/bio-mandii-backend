@@ -1,5 +1,7 @@
 import { Router } from "express";
 import {
+  changePassword,
+  changeUsername,
   deleteUser,
   getAllUsers,
   getUser,
@@ -15,7 +17,8 @@ authRouter.post("/login", loginUser);
 authRouter.post("/register", registerUser);
 authRouter.delete("/delete/:id", deleteUser);
 authRouter.get("/allUsers", getAllUsers);
-
 authRouter.use(authMiddleware);
 authRouter.get("/getUser", getUser);
 authRouter.put("/updateUser", updateUser);
+authRouter.patch("/changeUsername", changeUsername);
+authRouter.patch("/changePassword", changePassword);
