@@ -67,7 +67,6 @@ export const registerUser = async (req, res) => {
       newUser,
     });
   } catch (error) {
-    console.log("Erro from controller", error);
     res.status(500).json({
       success: false,
       message: "Internal server error",
