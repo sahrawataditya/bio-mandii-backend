@@ -1,3 +1,9 @@
+## Cloning Repo in local machine
+
+```bash
+git clone https://github.com/sahrawataditya/bio-mandii-backend.git
+```
+
 ## Install All Dependencies
 
 ```bash
@@ -33,7 +39,7 @@ pnpm dev
 # or
 bun dev
 ```
+
 ## Check Server is Running or Not
 
 hit the server link with / route
-
