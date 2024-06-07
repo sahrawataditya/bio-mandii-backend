@@ -1,3 +1,8 @@
+## Server is up and running 
+https://bio-mandii-backend.onrender.com/
+but because of free instance it may delay the service but nothing happens use it locally
+
+
 ## Cloning Repo in local machine
 
 ```bash
